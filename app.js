@@ -1,6 +1,27 @@
-let count = 0;
+const express = require('express');
+const app = express();
+const router = require('./routes/auth');
+const notFound = require('./middlewares/errorPage');
+const handleError = require('./middlewares/handleError');
 
-setInterval(() => {
-    console.log("Count: " + count);
-    count += 1;
-}, 10000);
+const port = process.env.PORT || 2800
+const startServer = async () => {
+    try {
+        // await connect(process.env.MONGO_URI)
+        app.listen(2800, console.log(`Server is listening on port ${port}`));
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+
+app.use(express.static('public'));
+
+app.use(express.json());
+
+app.use('/api/v1', router);
+
+app.use(handleError);
+app.use(notFound);
+
+startServer();
